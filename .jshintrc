@@ -1,0 +1,25 @@
+{
+    "curly": true,
+    "eqeqeq": true,
+    "immed": true,
+    "latedef": true,
+    "newcap": true,
+    "noarg": true,
+    "sub": true,
+    "undef": true,
+    "unused": false,
+    "boss": true,
+    "eqnull": true,
+    "browser": true,
+    "esversion": 6,
+    "globals": {
+        "alert": true,
+        "jQuery": true,
+        "Swiper": true,
+        "console": true,
+        "require": true,
+        "Parallax": true,
+        "hasScrolled": true,
+        "scrollToElem": true
+    }
+}

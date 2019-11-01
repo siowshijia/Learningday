@@ -1,0 +1,164 @@
+####################
+# !VARIABLES
+####################
+variables:
+    STAGING_ENV: "https://stg.example.com/"
+    PRODUCTION_ENV: "https://www.example.com/"
+
+stages:
+    - Build
+    - Check
+    - Deploy
+
+####################
+# !BUILD
+####################
+Composer:
+    image: composer
+    stage: Build
+    when: always
+    tags:
+        - webimp
+        - docker
+    script:
+        - composer install
+    artifacts:
+        when: on_success
+        expire_in: 1 day
+        paths:
+            - vendor/
+
+Assets:
+    image: webimp/node
+    stage: Build
+    when: always
+    tags:
+        - webimp
+        - docker
+    script:
+        - npm install
+        - npm run build
+    artifacts:
+        when: on_success
+        expire_in: 1 day
+        paths:
+            - assets/css/
+            - assets/js/
+            - assets/fonts/
+            - assets/img/
+
+####################
+# !CHECK
+####################
+CodingStyle:
+    image: composer
+    stage: Check
+    when: on_success
+    tags:
+        - webimp
+        - docker
+    script:
+        # check wordpress styling
+        - composer run tests
+    dependencies:
+        - Composer
+    allow_failure: true
+
+####################
+# !DEPLOY
+####################
+Staging:
+    image: webimp/php-72-apache
+    stage: Deploy
+    only:
+        - /^staging/.*$/
+    when: on_success
+    tags:
+        - webimp
+        - docker
+    before_script:
+        # run ssh-agent (inside the build environment)
+        - eval $(ssh-agent -s)
+        # add the SSH key stored in WEBIMPCO_SSH_PRIVATE_KEY variable to the agent store
+        - ssh-add <(echo "$WEBIMPCO_SSH_PRIVATE_KEY")
+        # WARNING: Use this only with the Docker executor, if you use it with shell
+        # you will overwrite your user's SSH config.
+        - mkdir -p ~/.ssh
+        - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+        # additional variables
+        - export THEME_PATH="$WEBIMPCO_THEME_PATH/$THEME_FOLDER_NAME"
+    script:
+        # remove unused artifacts
+        - rm -rf .git
+          && rm -rf .gitignore
+          && rm -rf ./vendor/
+        # compress source code
+        - tar -cvzf ../theme.tgz -C $CI_PROJECT_DIR .
+          && cd ..
+        # temp folder for upload
+        - ssh -p $WEBIMPCO_PORT $WEBIMPCO_USERNAME@$WEBIMPCO_HOST "mkdir -p $WEBIMPCO_TEMP_PATH"
+        # upload archive
+        - rsync -avz -e "ssh -p $WEBIMPCO_PORT" --progress theme.tgz $WEBIMPCO_USERNAME@$WEBIMPCO_HOST:"$WEBIMPCO_TEMP_PATH"
+        # uncompress, swap live files then cleanup
+        - ssh -p $WEBIMPCO_PORT $WEBIMPCO_USERNAME@$WEBIMPCO_HOST "
+          tar -xzvf "$WEBIMPCO_TEMP_PATH/theme.tgz" -C "$WEBIMPCO_TEMP_PATH"
+          && rm "$WEBIMPCO_TEMP_PATH/theme.tgz"
+          && find "$WEBIMPCO_TEMP_PATH" -type d -exec chmod 755 {} \;
+          && find "$WEBIMPCO_TEMP_PATH" -type f -exec chmod 644 {} \;
+          && mkdir -p "$THEME_PATH"
+          && rsync -az --delete "$WEBIMPCO_TEMP_PATH/" "$THEME_PATH"
+          && rm -rf "$WEBIMPCO_TEMP_PATH""
+    dependencies:
+        - Composer
+        - Assets
+    environment:
+        name: Staging
+        url: $STAGING_ENV
+
+Production:
+    image: webimp/php-72-apache
+    stage: Deploy
+    only:
+        - /^production/.*$/
+    when: manual
+    tags:
+        - webimp
+        - docker
+    before_script:
+        # run ssh-agent (inside the build environment)
+        - eval $(ssh-agent -s)
+        # add the SSH key stored in PRODUCTION_SSH_PRIVATE_KEY variable to the agent store
+        - ssh-add <(echo "$PRODUCTION_SSH_PRIVATE_KEY")
+        # WARNING: Use this only with the Docker executor, if you use it with shell
+        # you will overwrite your user's SSH config.
+        - mkdir -p ~/.ssh
+        - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+        # additional variables
+        - export THEME_PATH="$PRODUCTION_THEME_PATH/$THEME_FOLDER_NAME"
+    script:
+        # remove unused artifacts
+        - rm -rf .git
+          && rm -rf .gitignore
+          && rm -rf ./vendor/
+        # compress source code
+        - tar -cvzf ../theme.tgz -C $CI_PROJECT_DIR .
+          && cd ..
+        # temp folder for upload
+        - ssh -p $PRODUCTION_PORT $PRODUCTION_USERNAME@$PRODUCTION_HOST "mkdir -p $PRODUCTION_TEMP_PATH"
+        # upload archive
+        - rsync -avz -e "ssh -p $PRODUCTION_PORT" --progress theme.tgz $PRODUCTION_USERNAME@$PRODUCTION_HOST:"$PRODUCTION_TEMP_PATH"
+        # uncompress, swap live files then cleanup
+        - ssh -p $PRODUCTION_PORT $PRODUCTION_USERNAME@$PRODUCTION_HOST "
+          tar -xzvf "$PRODUCTION_TEMP_PATH/theme.tgz" -C "$PRODUCTION_TEMP_PATH"
+          && rm "$PRODUCTION_TEMP_PATH/theme.tgz"
+          && find "$PRODUCTION_TEMP_PATH" -type d -exec chmod 755 {} \;
+          && find "$PRODUCTION_TEMP_PATH" -type f -exec chmod 644 {} \;
+          && mkdir -p "$THEME_PATH"
+          && rsync -az --delete "$PRODUCTION_TEMP_PATH/" "$THEME_PATH"
+          && rm -rf "$PRODUCTION_TEMP_PATH""
+    dependencies:
+        - Composer
+        - Assets
+    environment:
+        name: Production
+        url: $PRODUCTION_ENV

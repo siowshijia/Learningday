@@ -1,0 +1,27 @@
+.woocommerce-message {
+    .button {
+        @extend .btn;
+    }
+
+    &.alert-success {
+        .button {
+            @extend .btn-success;
+        }
+    }
+
+    &.alert-danger {
+        .button {
+            @extend .btn-danger;
+        }
+    }
+}
+
+.woocommerce-info,
+.woocommerce-message {
+    background-color: theme-color-level("info", $alert-bg-level);
+    border          : 1px solid theme-color-level("info", $alert-border-level);
+
+    &:before {
+        color: theme-color-level("info", $alert-color-level);
+    }
+}

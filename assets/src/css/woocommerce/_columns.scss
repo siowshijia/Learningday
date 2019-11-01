@@ -1,0 +1,18 @@
+.woocommerce,
+.woocommerce-page {
+    #content {
+        div.product {
+            div.images,
+            div.summary {
+                width: auto;
+                float: none;
+            }
+        }
+    }
+
+    .cart-collaterals,
+    .cart_totals {
+        width: auto;
+        float: none;
+    }
+}

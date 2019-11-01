@@ -1,0 +1,12 @@
+// Dependencies
+@import "../../../../node_modules/bootstrap/scss/functions";
+@import "../../../../node_modules/bootstrap/scss/variables";
+@import "../global/variables";
+@import "../../../../node_modules/bootstrap/scss/mixins";
+@import "../global/mixins";
+
+// original swiper
+@import "../../../../.tmp/swiper";
+
+// Customisations
+@import "global.scss";

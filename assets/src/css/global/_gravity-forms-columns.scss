@@ -1,0 +1,33 @@
+.gform_fields {
+    display: block;
+    margin-left: -($grid-gutter-width / 2);
+    margin-right: -($grid-gutter-width / 2);
+    box-sizing: border-box;
+
+    &:before,
+    &:after {
+        content: '';
+        display: table;
+        box-sizing: border-box;
+    }
+
+    &:after {
+        clear: both;
+    }
+
+    .multicolumn-start.divider-list-item,
+    .multicolumn-start.divider-list-item + .divider-list-item {
+        float: left;
+        padding-left: ($grid-gutter-width / 2);
+        padding-right: ($grid-gutter-width / 2);
+        position: relative;
+    }
+
+    .column-count-1-of-2 {
+        width: 50%;
+    }
+}
+
+.gform_footer {
+    text-align: center;
+}

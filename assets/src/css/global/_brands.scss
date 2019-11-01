@@ -1,0 +1,37 @@
+.brand-facebook,
+.brand-facebook a {
+    color: $bc-facebook;
+
+    &:hover {
+        color: darken($bc-facebook, 10%);
+    }
+}
+
+.brand-instagram,
+.brand-instagram a {
+    color: $bc-instagram;
+
+    &:hover {
+        color: darken($bc-instagram, 10%);
+    }
+}
+
+.brand-linkedin,
+.brand-linkedin a {
+    color: $bc-linkedin;
+
+    &:hover {
+        color: darken($bc-linkedin, 10%);
+    }
+}
+
+.brand-twitter,
+.brand-twitter a {
+    color: $bc-twitter;
+
+    &:hover {
+        color: darken($bc-twitter, 10%);
+    }
+}
+
+// TODO: other brands

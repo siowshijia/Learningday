@@ -1,0 +1,24 @@
+{
+    "name": "webimp-client-theme",
+    "description": "A customised wordpress theme for our Web Imp Clients",
+    "type": "library",
+    "require-dev": {
+        "squizlabs/php_codesniffer": "3.*",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
+        "wp-coding-standards/wpcs": "^2.1",
+        "phpcompatibility/php-compatibility": "^9.1"
+    },
+    "license": "Copyright © 2019 Web Imp Pte Ltd",
+    "authors": [{
+        "name": "Khairul Anwar",
+        "email": "khairul@webimp.com.sg"
+    }],
+    "minimum-stability": "stable",
+    "scripts": {
+        "tests": "composer sniffIncludes && composer sniffPartials && composer sniffTemplates && composer sniffWoocommerce",
+        "sniffIncludes": "phpcs -n --report=summary --standard=Wordpress,PHPCompatibility includes/",
+        "sniffPartials": "phpcs -n --report=summary --standard=Wordpress,PHPCompatibility partials/",
+        "sniffTemplates": "phpcs -n --report=summary --standard=Wordpress,PHPCompatibility templates/",
+        "sniffWoocommerce": "phpcs -n --report=summary --standard=Wordpress,PHPCompatibility woocommerce/"
+    }
+}

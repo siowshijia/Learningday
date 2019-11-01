@@ -1,0 +1,94 @@
+.wc-bookings-booking-form {
+    border : none;
+    padding: 0;
+
+    input[type=number],
+    input[type=text],
+    textarea {
+        @extend .form-control;
+    }
+
+    legend {
+        font-size: $font-size-base;
+    }
+
+    .label {
+        padding  : 0;
+        font-size: $font-size-base;
+    }
+
+    .ui-datepicker-month,
+    .ui-datepicker-year {
+        background-color: transparent;
+        border          : none;
+        max-width       : none;
+        display         : inline-block;
+        width           : auto;
+        font-weight     : bold;
+        line-height     : $line-height-base * $font-size-base;
+        @include box-shadow(none);
+    }
+
+    .wc-bookings-booking-cost {
+        border-top: none;
+        background: none;
+    }
+
+    .block-picker {
+        li a {
+            font-weight: 700;
+            background : theme-color("success");
+
+            &.selected,
+            &:focus,
+            &:hover {
+                background: theme-color("success") !important;
+            }
+        }
+    }
+}
+
+.wc-bookings-date-picker {
+    padding: 0;
+
+    .label {
+        color: $body-color;
+    }
+
+    .ui-datepicker {
+        table {
+            font-size: $font-size-sm;
+        }
+
+        .ui-datepicker-title {
+            padding: 0;
+        }
+
+        .ui-datepicker-next,
+        .ui-datepicker-prev {
+            height: 3.6em;
+        }
+
+        td.bookable a {
+            background: lighten(theme-color("success"), 5%) !important;
+
+            &:focus,
+            &:hover {
+                background-color: theme-color("success") !important;
+            }
+        }
+
+        td.ui-datepicker-current-day a {
+            background: theme-color("success") !important;
+
+            &:hover {
+                background-color: darken(theme-color("primary"), 5%) !important;
+            }
+        }
+    }
+}
+
+.wc-bookings-booking-form-button {
+    @extend .btn;
+    @extend .btn-dark;
+}

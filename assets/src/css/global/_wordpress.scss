@@ -1,0 +1,59 @@
+body.admin-bar {
+    .navbar-fixed-top {
+        top: 46px;
+
+        @media (min-width: map-get($grid-breakpoints, "sm")) {
+            top: 32px;
+        }
+    }
+}
+
+.alignleft {
+    float: left;
+    margin-right: map-get($spacers, "3");
+}
+
+.alignright {
+    float: right;
+    margin-left: map-get($spacers, "3");
+}
+
+.aligncenter {
+    float: none;
+    margin: 0 auto;
+    display: block;
+}
+
+.alignleft,
+.alignright
+.aligncenter {
+    margin-bottom: map-get($spacers, "3");
+}
+
+.wp-caption {
+    @extend .img-thumbnail;
+
+    .wp-caption-text {
+        // @extend .caption;
+    }
+}
+
+#wp-calendar {
+    width: 100%;
+    caption {
+        @extend .h4;
+        text-align: center;
+    }
+    #prev a {
+        @extend .btn;
+        @extend .btn-sm;
+        @extend .btn-dark;
+        margin-top: 5px;
+    }
+    #next a {
+        @extend .btn;
+        @extend .btn-sm;
+        @extend .btn-dark;
+        margin-top: 5px;
+    }
+}

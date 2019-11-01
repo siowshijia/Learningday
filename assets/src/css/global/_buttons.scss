@@ -1,0 +1,3 @@
+.btn-outline-inverse {
+    @include button-variant(#fff, rgba(#000, 0.5), #fff);
+}
